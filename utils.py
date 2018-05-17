@@ -1,4 +1,5 @@
 from Firewall import *
+from itertools import product
 from Property import *
 
 def satisfy(Frwl,p):
@@ -32,7 +33,7 @@ def satisfy(Frwl,p):
 # loop over each slice firewall and use prob algorithm to get witness packet over that slice
         for firewall in slice_firewall:
             temp_firewall = projection(firewall,p)
-            f= probe_field_set(temp_firewall,p)
+            f= probe_field_set(temp_firewall,p,friend_action_index)
 
 # collect all packet in Packet list
         packet_list = fill_possible_packet(f)
@@ -50,18 +51,65 @@ def satisfy(Frwl,p):
 
 # just check if rules ranges of all fields and property p ranges of all field intersect or not
 def overlap(rule,p):
-    return 0
+    for i in range(len(rule.fields)):
+        if(p.rule.fields[i][0]<rule.fields[i][0]and p.rule.fields[i][1]<rule.fields[i][0]):
+            return False
+        if(p.rule.fields[i][0]>rule.fields[i][1] and p.rule.fields[i][1]>rule.fields[i][1]):
+            return False
+        if(p.rule.fields[i][0]>rule.fields[i][0] and p.rule.fields[i][1]<rule.fields[i][1]):
+            return True
+        if(p.rule.fields[i][0]<rule.fields[i][0]and p.rule.fields[i][1]>rule.fields[i][0]):
+            return True
+        if (p.rule.fields[i][0] < rule.fields[i][1] and p.rule.fields[i][1] > rule.fields[i][1]):
+            return True
+    return True
 
+# actual projection of rule over p. return new constructed rule as intersection of ranges of fields
+def adjust_ranges_as_per_intersections(rule,p):
+    fields = []
+
+    for i in range(len(rule.fields)):
+        if(p.rule.fields[i][0]<rule.fields[i][0]and p.rule.fields[i][1]<rule.fields[i][0]):
+            return Rule([])
+        if(p.rule.fields[i][0]>rule.fields[i][1] and p.rule.fields[i][1]>rule.fields[i][1]):
+            return Rule([])
+        if(p.rule.fields[i][0]>rule.fields[i][0] and p.rule.fields[i][1]<rule.fields[i][1]):
+            fields.append([p.rule.fields[i][0],p.rule.fields[i][1]])
+        if(p.rule.fields[i][0]<rule.fields[i][0]and p.rule.fields[i][1]>rule.fields[i][0]):
+            fields.append([rule.fields[i][0],p.rule.fields[i][1]])
+        if (p.rule.fields[i][0] < rule.fields[i][1] and p.rule.fields[i][1] > rule.fields[i][1]):
+            fields.append([p.rule.fields[i][0],rule.fields[i][1]])
+
+    return Rule(fields)
 
 # return firewall with common intersecting ranges
 def projection(frwl,p):
-    return 0
+    rule_list = []
+    for i in range(len(frwl.rules)):
+        rule_list.append(adjust_ranges_as_per_intersections(frwl.rules[i],p))
+
+    return Firewall(rule_list)
 
 # probe algorithm to get possible values at each field positions
 # remember to remove elements that are out of property range generated from the process
-def probe_field_set(frwl,p):
-    return 0
+def probe_field_set(frwl,p,friend_action_index):
+    i=0
+    f=[]
+    for rule in frwl.rules:
+        if i in friend_action_index:
+            j=0
+            for field in rule.fields:
+                f[j].append(field[1]+1)
+                j=j+1
+        else:
+            k=0
+            for field in rule.fields:
+                f[k].append(field[0])
+                k=k+1
+        i=i+1
+
+    return f
 
 # cartisian product
 def fill_possible_packet(field_list):
-    return 0
+    return list(product(*field_list))

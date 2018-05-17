@@ -7,3 +7,6 @@ class Rule:
             self.fields.append([randint(0, 1000),randint(0, 1000)])
 
         self.fields.append(action)
+
+    def __init__(self, fields):
+        self.fields=fields
