@@ -99,8 +99,9 @@ def probe_field_set(frwl,p,friend_action_index):
         if i in friend_action_index:
             j=0
             for field in rule.fields:
-                f[j].append(field[1]+1)
-                j=j+1
+                if(field[1] + 1<=p.rule.fields[1]):
+                    f[j].append(field[1] + 1)
+                j = j + 1
         else:
             k=0
             for field in rule.fields:
