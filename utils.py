@@ -90,6 +90,21 @@ def projection(frwl,p):
 
     return Firewall(rule_list)
 
+def projection_from_base_rule(f,g):
+    return
+
+def flip_actions(g):
+    return
+
+def intersection_of_base_rules(f,g):
+    return
+
+def merge_two_firewall_slice(f,g):
+    return
+
+def packets_from_probe_algorithm(f,g):
+    return
+
 # probe algorithm to get possible values at each field positions
 # remember to remove elements that are out of property range generated from the process
 def probe_field_set(frwl,p,friend_action_index):
@@ -114,3 +129,6 @@ def probe_field_set(frwl,p,friend_action_index):
 # cartisian product
 def fill_possible_packet(field_list):
     return list(product(*field_list))
+
+def create_slice_firewall(firewall,split_action):
+    return None
