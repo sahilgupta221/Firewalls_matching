@@ -48,9 +48,12 @@ def satisfy(Frwl,p):
 
     return 1
 
+# just check if rules ranges of all fields and property p ranges of all field intersect or not
 def overlap(rule,p):
     return 0
 
+
+# return firewall with common intersecting ranges
 def projection(frwl,p):
     return 0
 
