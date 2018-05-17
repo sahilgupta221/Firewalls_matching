@@ -8,23 +8,23 @@ def satisfy(Frwl,p):
 
     # created enemy and friend rule index as per property p
     #action index contain friend(1) and enemy(0) value same position as of rules
-    friend_action_index = []
+    enemy_action_index = []
     i=0
     for rule in Frwl.rules:
-        if(rule.fields[Frwl.number_of_fields] == p.rule.fields[Frwl.number_of_fields]):
-            friend_action_index.append(i)
+        if(rule.fields[Frwl.number_of_fields] != p.rule.fields[Frwl.number_of_fields]):
+            enemy_action_index.append(i)
         i=i+1
 
 # all enemy rules index and friend rules above it having some over lap is clubbed together
 # to form a slice
-    pre_index=0
-    for index in friend_action_index:
+    for index in enemy_action_index:
         rules=[]
-        for i in range(pre_index,index+1):
+        for i in range(0,index+1):
+            if(i in enemy_action_index and i!=index):
+                continue
             if(overlap(Frwl.rules[i],p)):
                 rules.append(Frwl.rules[i])
         slice_firewall.append(Firewall(rules))
-        pre_index = index+1
 
 
 
