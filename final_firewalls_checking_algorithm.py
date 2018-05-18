@@ -1,6 +1,7 @@
 from time import *
 from utils import*
 import sys
+import os
 
 """
 1. Take two firewalls, F and G.
@@ -71,14 +72,14 @@ for i in range(0,int(number_of_firewall/2)):
                 flag = 0
 
     if (flag == 0):
-        print("F1 and F2 are not same")
+        print(F," and ",G," are not same\n",file=open("output"+str(os.getpid())+".txt", "a"))
     else:
-        print("F1 and F2 are same")
-
+        print(F," and ",G," are same\n",file=open("output"+str(os.getpid())+".txt", "a"))
+        
     stop = clock_gettime(0)
 
-    print("Time taken for comparision between",F," and ",G," is ", stop - start)
+    print("Time taken for comparision between",F," and ",G," is ", stop - start,"\n\n",file=open("output"+str(os.getpid())+".txt", "a"))
 
 stop = clock_gettime(0)
 
-print("Total time: ", stop - start)
+print("\nTotal time: ", stop - start,"\n",file=open("output"+str(os.getpid())+".txt", "a"))
