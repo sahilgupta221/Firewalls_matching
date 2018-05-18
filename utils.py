@@ -45,18 +45,25 @@ def is_overlap(firewall_rule,base_rule):
 
 def re_adjust_ranges_as_per_intersections(firewall_rule,base_rule):
     fields = []
+    if firewall_rule.fields is not None and isinstance(base_rule.fields, int)== False and isinstance(firewall_rule.fields, int):
+        for i in range(len(firewall_rule.fields) - 1):
+            if (base_rule.fields[i][0] < firewall_rule.fields[i][0] and base_rule.fields[i][1] <
+                firewall_rule.fields[i][0]):
+                return Rule(0)
+            elif (base_rule.fields[i][0] > firewall_rule.fields[i][1] and base_rule.fields[i][1] >
+                firewall_rule.fields[i][1]):
+                return Rule(0)
+            elif (base_rule.fields[i][0] > firewall_rule.fields[i][0] and base_rule.fields[i][1] <
+                firewall_rule.fields[i][1]):
+                fields.append([base_rule.fields[i][0], base_rule.fields[i][1]])
+            elif (base_rule.fields[i][0] < firewall_rule.fields[i][0] and base_rule.fields[i][1] >
+                firewall_rule.fields[i][0]):
+                fields.append([firewall_rule.fields[i][0], base_rule.fields[i][1]])
+            elif (base_rule.fields[i][0] < firewall_rule.fields[i][1] and base_rule.fields[i][1] >
+                firewall_rule.fields[i][1]):
+                fields.append([base_rule.fields[i][0], firewall_rule.fields[i][1]])
 
-    for i in range(len(firewall_rule.fields)-1):
-        if(base_rule.fields[i][0]<firewall_rule.fields[i][0] and base_rule.fields[i][1]<firewall_rule.fields[i][0]):
-            return Rule(0)
-        if(base_rule.fields[i][0]>firewall_rule.fields[i][1] and base_rule.fields[i][1]>firewall_rule.fields[i][1]):
-            return Rule(0)
-        if(base_rule.fields[i][0]>firewall_rule.fields[i][0] and base_rule.fields[i][1]<firewall_rule.fields[i][1]):
-            fields.append([base_rule.fields[i][0],base_rule.fields[i][1]])
-        if(base_rule.fields[i][0]<firewall_rule.fields[i][0] and base_rule.fields[i][1]>firewall_rule.fields[i][0]):
-            fields.append([firewall_rule.fields[i][0],base_rule.fields[i][1]])
-        if(base_rule.fields[i][0]<firewall_rule.fields[i][1] and base_rule.fields[i][1] > firewall_rule.fields[i][1]):
-            fields.append([base_rule.fields[i][0],firewall_rule.fields[i][1]])
+        fields.append(firewall_rule.fields[len(firewall_rule.fields) - 1])
 
     return Rule(0,0,fields)
 
@@ -71,7 +78,8 @@ def flip_actions(g):
     rule_list = []
     for i in range(len(g.rules)):
         temp = copy.deepcopy(g.rules[i])
-        temp.fields[len(temp.fields)-1]=0 if temp.fields[len(temp.fields)-1]==1 else 1
+        if len(temp.fields)>0:
+            temp.fields[len(temp.fields)-1]=0 if temp.fields[len(temp.fields)-1]==1 else 1
         rule_list.append(temp)
     return Firewall(0,0,rule_list)
 
@@ -93,14 +101,18 @@ def packets_from_probe_algorithm(firewall):
             if rule.fields[len(rule.fields) - 1] == base_rule.fields[len(base_rule.fields) - 1]:
                 j = 0
                 for field in rule.fields:
-                    if (field[1] + 1 <= base_rule.fields[1]):
-                        f[j].append(field[1] + 1)
-                    j = j + 1
+                    if field is not None and isinstance(field, int)== False:
+                        if (field[1] + 1 <= base_rule.fields[1]):
+                            f[j].append(field[1] + 1)
+                        j = j + 1
+
             else:
                 k = 0
                 for field in rule.fields:
-                    f[k].append(field[0])
-                    k = k + 1
+                    if field is not None and isinstance(field, int)== False:
+                        f[k].append(field[0])
+                        k = k + 1
+
     return f
 
 #############################################################################

@@ -32,7 +32,7 @@ In other words - witness packets!
 So - apply Probe (or FDD) and find witness packets for all choices of Fa and Gb.
 Iff no witness packets, the two firewalls are equivalent :)
 """
-
+flag = 1
 start = clock_gettime(0)
 
 number_of_firewall = int(sys.argv[1])
@@ -78,3 +78,7 @@ for i in range(0,int(number_of_firewall/2)):
     stop = clock_gettime(0)
 
     print("Time taken for comparision between",F," and ",G," is ", stop - start)
+
+stop = clock_gettime(0)
+
+print("Total time: ", stop - start)
