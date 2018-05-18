@@ -78,7 +78,7 @@ for f in slice_firewall_F:
         gab = projection_from_base_rule(g,f)
         temp_gab = flip_actions(g)
         test_packet = intersection_of_base_rules(f,g)
-        temp_fg_firewall = merge_two_firewall_slice(f,g)
+        temp_fg_firewall = merge_two_firewall_slice(f,g)#take care of intersection base rules here.
         test_packet= test_packet+ packets_from_probe_algorithm(f,g)
         if(len(test_packet)):
             flag=0
