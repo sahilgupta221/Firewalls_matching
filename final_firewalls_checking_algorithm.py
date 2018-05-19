@@ -33,6 +33,7 @@ In other words - witness packets!
 So - apply Probe (or FDD) and find witness packets for all choices of Fa and Gb.
 Iff no witness packets, the two firewalls are equivalent :)
 """
+
 flag = 1
 start = clock_gettime(0)
 
@@ -48,6 +49,7 @@ for i in range(0,number_of_firewall):
     firewall_list.append(Firewall(number_rules_in_firewall,number_of_field_in_firewall))
 
 for i in range(0,int(number_of_firewall/2)):
+    flag = 1
     F = firewall_list[i]
     G = firewall_list[i+int(number_of_firewall/2)]
 
@@ -66,9 +68,9 @@ for i in range(0,int(number_of_firewall/2)):
             fab = projection_from_base_rule(f, g)
             gab = projection_from_base_rule(g, f)
             temp_gab = flip_actions(gab)
-            temp_fg_firewall = merge_two_firewall_slice(fab, gab)  # take care of intersection base rules here.
+            temp_fg_firewall = merge_two_firewall_slice(fab, temp_gab)  # take care of intersection base rules here.
             test_packet = packets_from_probe_algorithm(temp_fg_firewall)
-            if (len(test_packet)):
+            if (len(test_packet)!=0):
                 flag = 0
 
     if (flag == 0):
